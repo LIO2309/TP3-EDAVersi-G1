@@ -92,18 +92,16 @@ void getValidMoves(GameModel &model, Moves &validMoves)
         for (int x = 0; x < BOARD_SIZE; x++)
         {
             Square move = {x, y};
-            Piece oppositePiece, currentPiece;
 
-            if (getCurrentPlayer(model) == PLAYER_BLACK)
-            {
-                oppositePiece = PIECE_WHITE;
-                currentPiece = PIECE_BLACK;
-            }
-            else                        
-            {
-                oppositePiece = PIECE_BLACK;
-                currentPiece = PIECE_WHITE;
-            }
+            Piece currentPiece =
+                (getCurrentPlayer(model) == PLAYER_WHITE)
+                ? PIECE_WHITE
+                : PIECE_BLACK;
+
+            Piece oppositePiece =
+                (getCurrentPlayer(model) == PLAYER_WHITE)
+                ? PIECE_BLACK
+                : PIECE_WHITE;
 
             if(getBoardPiece(model, move) == PIECE_EMPTY)    
             {
@@ -149,7 +147,7 @@ bool playMove(GameModel &model, Square move)
 
     setBoardPiece(model, move, piece);
 
-    // To-do: your code goes here...
+    
 
     // Update timer
     double currentTime = GetTime();
