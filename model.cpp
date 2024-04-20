@@ -88,18 +88,54 @@ bool isSquareValid(Square square)
 
 void getValidMoves(GameModel &model, Moves &validMoves)
 {
-    // To-do: your code goes here...
-
     for (int y = 0; y < BOARD_SIZE; y++)
         for (int x = 0; x < BOARD_SIZE; x++)
         {
             Square move = {x, y};
+            Piece oppositePiece, currentPiece;
 
-            // +++ TEST
-            // Lists all empty squares...
-            if (getBoardPiece(model, move) == PIECE_EMPTY)
-                validMoves.push_back(move);
-            // --- TEST
+            if (getCurrentPlayer(model) == PLAYER_BLACK)
+            {
+                oppositePiece = PIECE_WHITE;
+                currentPiece = PIECE_BLACK;
+            }
+            else                        
+            {
+                oppositePiece = PIECE_BLACK;
+                currentPiece = PIECE_WHITE;
+            }
+
+            if(getBoardPiece(model, move) == PIECE_EMPTY)    
+            {
+                for(int i= x-1; i <= x+1 ;i++)
+                {
+                    for (int j = y - 1; j <= y+1; j++)
+                    {
+                        Square aux = {i , j};
+
+                        if (getBoardPiece(model, aux) == oppositePiece)
+                        {
+                            int difX = aux.x - move.x;
+                            int difY = aux.y - move.y;
+                            bool f_black = false;
+                            bool f_empty = false;
+
+                            while(isSquareValid(aux) && (!f_black) && (!f_empty))
+                            {
+                                aux.x += difX;
+                                aux.y += difY;
+                                if(getBoardPiece(model, aux) == currentPiece)
+                                {
+                                    f_black = true;
+                                    validMoves.push_back(move);
+                                }
+                                else if(getBoardPiece(model, aux) == PIECE_EMPTY)
+                                    f_empty = true;
+                            } 
+                        }
+                    }
+                }
+            }
         }
 }
 
