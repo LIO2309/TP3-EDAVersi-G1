@@ -139,6 +139,8 @@ void getValidMoves(GameModel &model, Moves &validMoves)
 
 bool playMove(GameModel &model, Square move)
 {
+    bool paintCond = false;
+
     // Set game piece
     Piece piece =
         (getCurrentPlayer(model) == PLAYER_WHITE)
@@ -147,6 +149,60 @@ bool playMove(GameModel &model, Square move)
 
     setBoardPiece(model, move, piece);
 
+    /////////////////////////////
+    Piece oppositePiece =
+                (getCurrentPlayer(model) == PLAYER_WHITE)
+                ? PIECE_BLACK
+                : PIECE_WHITE;
+
+    for(int i= move.x-1; i <= move.x+1 ;i++)
+    {
+        for (int j = move.y-1; j <= move.y+1; j++)
+        {
+            Square neighbourPos = {i , j};
+
+            if (getBoardPiece(model, neighbourPos) == oppositePiece)
+            { 
+                int difX = neighbourPos.x - move.x;
+                int difY = neighbourPos.y - move.y;
+
+                Square linearMove = {i+difX , j+difY};
+
+                while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
+                {
+                    linearMove.x += difX;
+                    linearMove.y += difY;
+                }
+                if(getBoardPiece(model, linearMove)==PIECE_EMPTY)
+                {
+                    paintCond = true;
+                }
+                if(!paintCond)
+                {
+                    if((difY == 0) || (difX==0))    //casos horizontales y verticales
+                    {
+                        for(Square setPiece = neighbourPos; (setPiece.x <= linearMove.x) && (setPiece.y <= linearMove.y); setPiece.x += difX,setPiece.y += difY)
+                        {
+                            setBoardPiece(model, setPiece, piece);
+                        }
+                    }
+                    else    //casos diagonales
+                    {
+                        for(Square setPiece = neighbourPos; (setPiece.x < linearMove.x) && (setPiece.y < linearMove.y); setPiece.x += difX,setPiece.y += difY)
+                        {
+                            setBoardPiece(model, setPiece, piece);
+                        }
+                    }
+                }
+
+
+            }
+        }
+    }
+
+
+
+    /////////////////////////
     
 
     // Update timer
