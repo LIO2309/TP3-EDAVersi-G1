@@ -10,6 +10,8 @@
 
 [Enumera aquí las pruebas que hiciste para validar que tu generador de movimientos válidos y algoritmo de jugada funcionan correctamente.]
 
+
+
 ## Parte 2: Implementación del motor de IA
 
 [Enumera aquí las consideraciones que tomaste a la hora de implementar el algoritmo minimax.]

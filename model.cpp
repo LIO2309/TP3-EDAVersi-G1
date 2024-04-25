@@ -105,42 +105,51 @@ void getValidMoves(GameModel &model, Moves &validMoves)
 
             if(getBoardPiece(model, move) == PIECE_EMPTY)    
             {
+                bool f_current, f_empty;
+                bool f_pushback = false;
+
                 for(int i= x-1; i <= x+1 ;i++)
                 {
                     for (int j = y - 1; j <= y+1; j++)
                     {
                         Square aux = {i , j};
 
-                        if (getBoardPiece(model, aux) == oppositePiece)
+                        if (isSquareValid(aux))
                         {
-                            int difX = aux.x - move.x;
-                            int difY = aux.y - move.y;
-                            bool f_black = false;
-                            bool f_empty = false;
-
-                            while(isSquareValid(aux) && (!f_black) && (!f_empty))
+                            if (getBoardPiece(model, aux) == oppositePiece)
                             {
-                                aux.x += difX;
-                                aux.y += difY;
-                                if(getBoardPiece(model, aux) == currentPiece)
+                                int difX = aux.x - move.x;
+                                int difY = aux.y - move.y;
+                                f_current = false;
+                                f_empty = false;
+
+                                while(isSquareValid(aux) && (!f_current) && (!f_empty))
                                 {
-                                    f_black = true;
-                                    validMoves.push_back(move);
-                                }
-                                else if(getBoardPiece(model, aux) == PIECE_EMPTY)
-                                    f_empty = true;
-                            } 
+                                    aux.x += difX;
+                                    aux.y += difY;
+
+                                    Piece auxPiece = getBoardPiece(model, aux);
+
+                                    if(auxPiece == currentPiece)
+                                    {
+                                        f_current = true;
+                                        f_pushback = true;
+                                    }
+                                    else if(auxPiece == PIECE_EMPTY)
+                                        f_empty = true;
+                                } 
+                            }
                         }
                     }
                 }
+                if(f_pushback)
+                    validMoves.push_back(move);
             }
         }
 }
 
 bool playMove(GameModel &model, Square move)
 {
-    bool paintCond = false;
-
     // Set game piece
     Piece piece =
         (getCurrentPlayer(model) == PLAYER_WHITE)
@@ -160,48 +169,40 @@ bool playMove(GameModel &model, Square move)
         for (int j = move.y-1; j <= move.y+1; j++)
         {
             Square neighbourPos = {i , j};
+            if (isSquareValid(neighbourPos))
+            {
+                if (getBoardPiece(model, neighbourPos) == oppositePiece)
+                { 
+                    int difX = neighbourPos.x - move.x;
+                    int difY = neighbourPos.y - move.y;
 
-            if (getBoardPiece(model, neighbourPos) == oppositePiece)
-            { 
-                int difX = neighbourPos.x - move.x;
-                int difY = neighbourPos.y - move.y;
+                    Square linearMove = neighbourPos;
+                    int paintCount = 0;
 
-                Square linearMove = {i+difX , j+difY};
-
-                while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
-                {
-                    linearMove.x += difX;
-                    linearMove.y += difY;
-                }
-                if(getBoardPiece(model, linearMove)==PIECE_EMPTY)
-                {
-                    paintCond = true;
-                }
-                if(!paintCond)
-                {
-                    if((difY == 0) || (difX==0))    //casos horizontales y verticales
+                    while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
                     {
-                        for(Square setPiece = neighbourPos; (setPiece.x <= linearMove.x) && (setPiece.y <= linearMove.y); setPiece.x += difX,setPiece.y += difY)
-                        {
-                            setBoardPiece(model, setPiece, piece);
-                        }
+                        linearMove.x += difX;
+                        linearMove.y += difY;
+                        paintCount++; 
                     }
-                    else    //casos diagonales
+                    if(!isSquareValid(linearMove) || getBoardPiece(model, linearMove) == PIECE_EMPTY)
                     {
-                        for(Square setPiece = neighbourPos; (setPiece.x < linearMove.x) && (setPiece.y < linearMove.y); setPiece.x += difX,setPiece.y += difY)
+                        paintCount = 0; 
+                    }
+                    if(paintCount != 0)
+                    {
+                        while(paintCount > 0)
                         {
-                            setBoardPiece(model, setPiece, piece);
+                            linearMove.x -= difX;
+                            linearMove.y -= difY;
+                            setBoardPiece(model, linearMove, piece);
+                            paintCount--;
                         }
                     }
                 }
-
-
             }
         }
     }
-
-
-
     /////////////////////////
     
 
