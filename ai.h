@@ -10,11 +10,22 @@
 
 #include "model.h"
 
+using namespace std;
+
 /**
  * @brief Returns the best move for a certain position.
  *
  * @return The best move.
  */
+
+class treeNode
+{
+	public:
+		int gains;
+		int validMoves;
+		vector<treeNode*> nextBoards;
+};
+
 Square getBestMove(GameModel &model);
 
 #endif

@@ -12,16 +12,26 @@
 
 Square getBestMove(GameModel &model)
 {
-    // To-do: your code goes here...
-
-
-
-    // +++ TEST
+     // +++ TEST
     // Returns a random valid move...
     Moves validMoves;
     getValidMoves(model, validMoves);
 
-    int index = rand() % validMoves.size();
-    return validMoves[index];
+    int bestMoveIndex;
+
+    GameModel auxModel = model;
+
+    
+
+
+    treeNode currentBoard;
+    currentBoard.validMoves = validMoves.size();
+
+
+
+        
+        
+    //rand() % validMoves.size();
+    return validMoves[bestMoveIndex];
     // --- TEST
 }
