@@ -1,7 +1,8 @@
 /**
  * @brief Implements the Reversi game model
  * @author Marc S. Ressl
- *
+ * Luciano E. Colugnatti; Santiago A. Riverós; Leandro A. Yiu.
+ * Estructuras de Datos y Algoritmos (25.03).
  * @copyright Copyright (c) 2023-2024
  */
 
@@ -24,6 +25,12 @@ enum Piece
     PIECE_EMPTY,
     PIECE_BLACK,
     PIECE_WHITE,
+};
+
+enum Mode
+{
+    AI,
+    IN_GAME,
 };
 
 struct Square
@@ -135,5 +142,16 @@ void getValidMoves(GameModel &model, Moves &validMoves);
  * @return Move accepted.
  */
 bool playMove(GameModel &model, Square move);
+
+/**
+ * @brief Paints the neighbour pieces if in IN_GAME mode, else in AI mode returns the number of 
+ * possible negihbours a move could gain.
+ *
+ * @param model The game model.
+ * @param square The move.
+ * @param mode Mode in which the function must work
+ * @return Number of possible neighbours a move could possibly get.
+ */
+int operatePiece(GameModel& model, Square move, Mode mode);
 
 #endif

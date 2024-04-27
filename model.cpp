@@ -1,7 +1,8 @@
 /**
  * @brief Implements the Reversi game model
  * @author Marc S. Ressl
- *
+ * Luciano E. Colugnatti; Santiago A. Riverós; Leandro A. Yiu.
+ * Estructuras de Datos y Algoritmos (25.03).
  * @copyright Copyright (c) 2023-2024
  */
 
@@ -157,54 +158,8 @@ bool playMove(GameModel &model, Square move)
             : PIECE_BLACK;
 
     setBoardPiece(model, move, piece);
-
-    /////////////////////////////
-    Piece oppositePiece =
-                (getCurrentPlayer(model) == PLAYER_WHITE)
-                ? PIECE_BLACK
-                : PIECE_WHITE;
-
-    for(int i= move.x-1; i <= move.x+1 ;i++)
-    {
-        for (int j = move.y-1; j <= move.y+1; j++)
-        {
-            Square neighbourPos = {i , j};
-            if (isSquareValid(neighbourPos))
-            {
-                if (getBoardPiece(model, neighbourPos) == oppositePiece)
-                { 
-                    int difX = neighbourPos.x - move.x;
-                    int difY = neighbourPos.y - move.y;
-
-                    Square linearMove = neighbourPos;
-                    int paintCount = 0;
-
-                    while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
-                    {
-                        linearMove.x += difX;
-                        linearMove.y += difY;
-                        paintCount++; 
-                    }
-                    if(!isSquareValid(linearMove) || getBoardPiece(model, linearMove) == PIECE_EMPTY)
-                    {
-                        paintCount = 0; 
-                    }
-                    if(paintCount != 0)
-                    {
-                        while(paintCount > 0)
-                        {
-                            linearMove.x -= difX;
-                            linearMove.y -= difY;
-                            setBoardPiece(model, linearMove, piece);
-                            paintCount--;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    /////////////////////////
     
+    operatePiece(model,move,IN_GAME);
 
     // Update timer
     double currentTime = GetTime();
@@ -225,4 +180,66 @@ bool playMove(GameModel &model, Square move)
         model.gameOver = true;
 
     return true;
+}
+
+int operatePiece(GameModel &model, Square move, Mode mode)
+{
+    Piece piece =
+        (getCurrentPlayer(model) == PLAYER_WHITE)
+            ? PIECE_WHITE
+            : PIECE_BLACK;
+
+    Piece oppositePiece =
+                (getCurrentPlayer(model) == PLAYER_WHITE)
+                ? PIECE_BLACK
+                : PIECE_WHITE;
+
+    int finalGainsCount = 0;
+
+    for(int i= move.x-1; i <= move.x+1 ;i++)
+    {
+        for (int j = move.y-1; j <= move.y+1; j++)
+        {
+            Square neighbourPos = {i , j};
+            if (isSquareValid(neighbourPos))
+            {
+                if (getBoardPiece(model, neighbourPos) == oppositePiece)
+                { 
+                    int difX = neighbourPos.x - move.x;
+                    int difY = neighbourPos.y - move.y;
+
+                    Square linearMove = neighbourPos;
+                    int gainsCount = 0;
+
+                    while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
+                    {
+                        linearMove.x += difX;
+                        linearMove.y += difY;
+                        gainsCount++; 
+                    }
+                    if(!isSquareValid(linearMove) || getBoardPiece(model, linearMove) == PIECE_EMPTY)
+                    {
+                        gainsCount = 0; 
+                    }
+
+                    if((gainsCount != 0)&&(mode == IN_GAME))
+                    {
+                        while(gainsCount > 0)
+                        {
+                            linearMove.x -= difX;
+                            linearMove.y -= difY;
+                            setBoardPiece(model, linearMove, piece);
+                            gainsCount--;
+                        }
+                    }
+                    else if(mode == AI)
+                    {
+                        finalGainsCount += gainsCount;
+                    }
+                }
+            }
+        }
+    }
+
+    return finalGainsCount;
 }
