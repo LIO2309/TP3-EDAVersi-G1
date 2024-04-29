@@ -16,7 +16,11 @@
 
 using namespace std;
 
-
+typedef struct
+{
+	std::vector<int> secondLevelGains;
+	GameModel model;
+}recursiveParams;
 
 class treeNode
 {
@@ -38,6 +42,7 @@ Square getBestMove(GameModel &model);
 
  * @param model	The game model.
  * @param node	The current node.
+ * @param recparams	For passing recursive parameters.
  * @param depht	The depth up to which the tree is analyzed.
  * @param maxOrMin	Indicates whether the gains should be maximized or minimized.
  * @param alpha	Label for alpha-beta pruning.
@@ -45,8 +50,7 @@ Square getBestMove(GameModel &model);
  * @param isFirstIteration	True if it is the first iteration, false otherwise.
  * @return The amount of pieces won by the AI.
  */
-int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
-
+int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
 /**
  * @brief Calculates the difference between AI's score and opponent's score.
  *

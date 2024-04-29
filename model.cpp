@@ -124,24 +124,23 @@ void getValidMoves(GameModel &model, Moves &validMoves)
                                 f_current = false;
                                 f_empty = false;
 
+                                aux.x += difX;
+                                aux.y += difY;
+
                                 while(isSquareValid(aux) && (!f_current) && (!f_empty))
                                 {
+                                    Piece auxPiece = getBoardPiece(model, aux);
+
+                                    if (auxPiece == currentPiece)
+                                    {
+                                        f_current = true;
+                                        f_pushback = true;
+                                    }
+                                    else if (auxPiece == PIECE_EMPTY)
+                                        f_empty = true;
+
                                     aux.x += difX;
                                     aux.y += difY;
-
-                                    if (isSquareValid(aux))
-                                    {
-                                        Piece auxPiece = getBoardPiece(model, aux);
-
-                                        if (auxPiece == currentPiece)
-                                        {
-                                            f_current = true;
-                                            f_pushback = true;
-                                        }
-                                        else if (auxPiece == PIECE_EMPTY)
-                                            f_empty = true;
-                                    }
-                                    
                                 } 
                             }
                         }

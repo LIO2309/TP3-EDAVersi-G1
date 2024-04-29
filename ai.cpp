@@ -11,6 +11,7 @@
 
 #include "ai.h"
 #include "controller.h"
+#include "view.h"
 
 #define DEPTH 7
 
@@ -30,25 +31,34 @@ Square getBestMove(GameModel &model)
     ////////////////////////////////////////////////////
     
     treeNode currentBoard;
+    //std::vector<int> secondLevelGains; 
     Moves validMoves;
+    int index;
+    recursiveParams recParams;
+    recParams.model = model;
+    
     getValidMoves(model, validMoves);
-
-    int index = miniMax(model,currentBoard, DEPTH, MAX, INT_MIN, INT_MAX, true);
-    
+    if (validMoves.size() > 1)
+    {
+        index = miniMax(model, currentBoard, recParams, DEPTH, MAX, INT_MIN, INT_MAX, true);
+    }
+    else
+    {
+        index = 0;
+    }
     return validMoves[index];
-    
 }
 
-int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration)
+int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration)
 {
+    //drawView(recParams.model);                ver como implementar este llamado a la funcion sin que se rompa la visualizacion del juego
     int gains, maxGains, minGains;
     Moves validMoves;
     getValidMoves(model, validMoves);
     node.validMoves = validMoves.size();
-    static std::vector<int> secondLevelGains; 
 
 
-    if((depth == 0) || (node.validMoves == 0))          //recordar actualizar en algun lado el campo validmoves del nodo
+    if((depth == 0) || (node.validMoves == 0))          
     {
         return aiPieceBalance(model);
     }
@@ -68,7 +78,10 @@ int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha
         for(auto childNode : node.nextBoards)
         {
             playMove(auxModel, validMoves[i++]);   //hace la jugada de la IA y te cambia el turno al humano
-            gains = miniMax(auxModel,*childNode, depth - 1, !maxOrMin, alpha, beta, false);
+            recParams.model.turnTimer = auxModel.turnTimer;
+            gains = miniMax(auxModel,*childNode, recParams, depth - 1, !maxOrMin, alpha, beta, false);
+            
+            
 
             //Visit postorder
             auxModel = model;
@@ -83,13 +96,11 @@ int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha
         if(isFirstIteration)
         {
             int index = 0;
-            while(secondLevelGains[index] != maxGains)
+            while(recParams.secondLevelGains[index] != maxGains)
             {
                 index++;
             }
             maxGains = index;
-
-            secondLevelGains = std::vector<int>();
         }
         return maxGains;
     }
@@ -100,7 +111,8 @@ int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha
         for(auto childNode : node.nextBoards)
         {
             playMove(auxModel, validMoves[i++]);   //hace la jugada del humano y te cambia el turno a la IA
-            gains = miniMax(auxModel, *childNode, depth - 1, !maxOrMin, alpha, beta, false);
+            recParams.model.turnTimer = auxModel.turnTimer;
+            gains = miniMax(auxModel, *childNode, recParams, depth - 1, !maxOrMin, alpha, beta, false);
 
             //Visit postorder
             auxModel = model;
@@ -114,7 +126,7 @@ int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha
 
         if(depth == DEPTH - 1)
         {
-            secondLevelGains.push_back(minGains);
+            recParams.secondLevelGains.push_back(minGains);
         }
         return minGains;
 
