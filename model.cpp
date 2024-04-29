@@ -129,15 +129,19 @@ void getValidMoves(GameModel &model, Moves &validMoves)
                                     aux.x += difX;
                                     aux.y += difY;
 
-                                    Piece auxPiece = getBoardPiece(model, aux);
-
-                                    if(auxPiece == currentPiece)
+                                    if (isSquareValid(aux))
                                     {
-                                        f_current = true;
-                                        f_pushback = true;
+                                        Piece auxPiece = getBoardPiece(model, aux);
+
+                                        if (auxPiece == currentPiece)
+                                        {
+                                            f_current = true;
+                                            f_pushback = true;
+                                        }
+                                        else if (auxPiece == PIECE_EMPTY)
+                                            f_empty = true;
                                     }
-                                    else if(auxPiece == PIECE_EMPTY)
-                                        f_empty = true;
+                                    
                                 } 
                             }
                         }
@@ -151,7 +155,7 @@ void getValidMoves(GameModel &model, Moves &validMoves)
 
 bool playMove(GameModel &model, Square move)
 {
-    // Set game piece
+    /*// Set game piece
     Piece piece =
         (getCurrentPlayer(model) == PLAYER_WHITE)
             ? PIECE_WHITE
@@ -159,7 +163,62 @@ bool playMove(GameModel &model, Square move)
 
     setBoardPiece(model, move, piece);
     
-    operatePiece(model,move,IN_GAME);
+    operatePiece(model, move, IN_GAME);*/
+
+    /////////////////////////////////////
+        // Set game piece
+    Piece piece =
+        (getCurrentPlayer(model) == PLAYER_WHITE)
+            ? PIECE_WHITE
+            : PIECE_BLACK;
+
+    setBoardPiece(model, move, piece);
+
+    Piece oppositePiece =
+                (getCurrentPlayer(model) == PLAYER_WHITE)
+                ? PIECE_BLACK
+                : PIECE_WHITE;
+
+    for(int i = move.x-1; i <= move.x+1 ;i++)
+    {
+        for (int j = move.y-1; j <= move.y+1; j++)
+        {
+            Square neighbourPos = {i , j};
+            if (isSquareValid(neighbourPos))
+            {
+                if (getBoardPiece(model, neighbourPos) == oppositePiece)
+                { 
+                    int difX = neighbourPos.x - move.x;
+                    int difY = neighbourPos.y - move.y;
+
+                    Square linearMove = neighbourPos;
+                    int paintCount = 0;
+
+                    while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
+                    {
+                        linearMove.x += difX;
+                        linearMove.y += difY;
+                        paintCount++; 
+                    }
+                    if(!isSquareValid(linearMove) || getBoardPiece(model, linearMove) == PIECE_EMPTY)
+                    {
+                        paintCount = 0; 
+                    }
+                    if(paintCount != 0)
+                    {
+                        while(paintCount > 0)
+                        {
+                            linearMove.x -= difX;
+                            linearMove.y -= difY;
+                            setBoardPiece(model, linearMove, piece);
+                            paintCount--;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /////////////////////////////////////
 
     // Update timer
     double currentTime = GetTime();
@@ -222,7 +281,7 @@ int operatePiece(GameModel &model, Square move, Mode mode)
                         gainsCount = 0; 
                     }
 
-                    if((gainsCount != 0)&&(mode == IN_GAME))
+                    if(gainsCount != 0)
                     {
                         while(gainsCount > 0)
                         {
@@ -232,7 +291,7 @@ int operatePiece(GameModel &model, Square move, Mode mode)
                             gainsCount--;
                         }
                     }
-                    else if(mode == AI)
+                    if(mode == AI)
                     {
                         finalGainsCount += gainsCount;
                     }

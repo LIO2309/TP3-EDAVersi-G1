@@ -12,96 +12,144 @@
 #include "ai.h"
 #include "controller.h"
 
+#define DEPTH 7
+
 Square getBestMove(GameModel &model)
 {
     //////////////////////////////////////////////////////
     // +++ TEST
     // Returns a random valid move...
-    
-    /*Moves validMoves;
+    /*
+    Moves validMoves;
     getValidMoves(model, validMoves);
 
     int index = rand() % validMoves.size();
-    return validMoves[index];*/
+    return validMoves[index];
+    */
     // --- TEST
     ////////////////////////////////////////////////////
-
+    
     treeNode currentBoard;
+    Moves validMoves;
+    getValidMoves(model, validMoves);
 
-    GameModel auxModel = model;
-
-    //minimax(auxModel,currentBoard, 7, MAX, INT_MIN, INT_MAX);
-
-    currentBoard.validMoves = validMoves.size();    
-    int index
-    return validMoves[index];    
-
+    int index = miniMax(model,currentBoard, DEPTH, MAX, INT_MIN, INT_MAX, true);
+    
+    return validMoves[index];
+    
 }
 
-void analyzeMove(GameModel& model, Square move)
-{
-    int gains = operatePiece(model, move, AI);
-
-}
-
-int miniMax(GameModel &auxModel, treeNode node, int depth, bool maxOrMin, int alpha, int beta)
+int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration)
 {
     int gains, maxGains, minGains;
-    
-    
+    Moves validMoves;
+    getValidMoves(model, validMoves);
+    node.validMoves = validMoves.size();
+    static std::vector<int> secondLevelGains; 
 
-    if((depth == 0) || (node.validMoves = 0))          //recordar actualizar en algun lado el campo validmoves del nodo
+
+    if((depth == 0) || (node.validMoves == 0))          //recordar actualizar en algun lado el campo validmoves del nodo
     {
-        return node.gains;
+        return aiPieceBalance(model);
     }
 
-    //Visit preorder: avanzo en el tablero aux 1 paso
-    Moves validMoves;
-    getValidMoves(auxModel, validMoves);
-    node.validMoves = validMoves.size();
-
-    //Validar con maxormin qué valid mves hay q analizar, si son los del humano o la
+    GameModel auxModel = model;
     
-    //hay q modificar manualmente auxmodel.currentplayer para levantar los validmoves correctos
-
-    //LOS CAMBIOS SÍ SE VAN A REALIZAR EN EL TABLERO AUX. ENTONCES HAY Q AVILITAR QUE PINTE Y HACER UN 
-    //SWITCH PARA QUE DESHAGA LOS CAMBIOS (PINTAR LOS Q HABIA PINTADO CON EL COLOR DE LA FICHA OPUESTA)
-
-
     for (int i = 0; i < node.validMoves; i++)
     {
         treeNode* childNode = new treeNode;
         node.nextBoards.push_back(childNode);
     }
-    
 
     if(maxOrMin)
     {
+        int i = 0;
         maxGains = INT_MIN;
         for(auto childNode : node.nextBoards)
         {
-            gains = miniMax(node, depth - 1, !maxOrMin, alpha, beta);
+            playMove(auxModel, validMoves[i++]);   //hace la jugada de la IA y te cambia el turno al humano
+            gains = miniMax(auxModel,*childNode, depth - 1, !maxOrMin, alpha, beta, false);
+
+            //Visit postorder
+            auxModel = model;
+            delete childNode;
+            
             maxGains = max(maxGains, gains);
             alpha = max(alpha, gains);
             if (beta <= alpha)
                 break;
-            return maxGains;
         }
-        //Visit postorder: revierto los cambios en el tablero aux a un paso atrás
+
+        if(isFirstIteration)
+        {
+            int index = 0;
+            while(secondLevelGains[index] != maxGains)
+            {
+                index++;
+            }
+            maxGains = index;
+
+            secondLevelGains = std::vector<int>();
+        }
+        return maxGains;
     }
     else
     {
+        int i = 0;
         minGains = INT_MAX;
         for(auto childNode : node.nextBoards)
         {
-            gains = miniMax(node, depth - 1, !maxOrMin, alpha, beta);
+            playMove(auxModel, validMoves[i++]);   //hace la jugada del humano y te cambia el turno a la IA
+            gains = miniMax(auxModel, *childNode, depth - 1, !maxOrMin, alpha, beta, false);
+
+            //Visit postorder
+            auxModel = model;
+            delete childNode;
+            
             minGains = min(minGains, gains);
             beta = min(beta, gains);
             if(beta <= alpha)
                 break;
-            return minGains;
         }
-        //Visit postorder
+
+        if(depth == DEPTH - 1)
+        {
+            secondLevelGains.push_back(minGains);
+        }
+        return minGains;
+
     }   
 }
 
+int aiPieceBalance(GameModel &model)
+{
+    int aiCount = 0;
+    Piece currentPiece;
+    Square position;
+
+    Piece currentAIPiece = (model.humanPlayer == PLAYER_WHITE)
+                            ? PIECE_BLACK
+                            : PIECE_WHITE;
+
+    for(int i=0 ; i < BOARD_SIZE; i++)
+    {
+        for(int j=0 ; j < BOARD_SIZE; j++)
+        {
+            position.x = i;
+            position.y = j;
+            currentPiece = getBoardPiece(model, position);
+            if (currentPiece != PIECE_EMPTY)
+            {
+                if(currentPiece == currentAIPiece)
+                {
+                    aiCount++;
+                }
+                else
+                {
+                    aiCount--;
+                }
+            }
+        }
+    }
+    return aiCount;
+}

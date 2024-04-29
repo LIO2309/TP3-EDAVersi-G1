@@ -21,7 +21,6 @@ using namespace std;
 class treeNode
 {
 	public:
-		int gains;
 		int validMoves;
 		vector<treeNode*> nextBoards;
 };
@@ -43,9 +42,16 @@ Square getBestMove(GameModel &model);
  * @param maxOrMin	Indicates whether the gains should be maximized or minimized.
  * @param alpha	Label for alpha-beta pruning.
  * @param beta	Label for alpha-beta pruning.
+ * @param isFirstIteration	True if it is the first iteration, false otherwise.
  * @return The amount of pieces won by the AI.
  */
-int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha, int beta);
+int miniMax(GameModel &model, treeNode node, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
 
+/**
+ * @brief Calculates the difference between AI's score and opponent's score.
+ *
+ * @return The difference between AI's score and opponent's score.
+ */
+int aiPieceBalance(GameModel &model);
 
 #endif
