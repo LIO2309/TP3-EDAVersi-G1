@@ -18,7 +18,7 @@ typedef struct
 	std::vector<int> secondLevelGains;
 	int maxNodes;
 	int index;
-}recursiveParams;
+} recursiveParams;
 
 class treeNode
 {
@@ -57,5 +57,11 @@ int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int dep
  * @return The difference between AI's score and opponent's score.
  */
 int aiPieceBalance(GameModel &model);
+/**
+ * @brief Calculates the difference between AI's score and opponent's score.
+ *
+ * @return The difference between AI's score and opponent's score.
+ */
+int aiPieceBalanceWithWeight(GameModel& model);
 
 #endif

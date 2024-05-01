@@ -13,7 +13,10 @@
 #include "controller.h"
 #include "view.h"
 
-#define DEPTH 8
+//#define DIFFERENCE
+#define WEIGHTED
+
+#define DEPTH 10
 #define MAX_NODES 50000
 
 #define MIN 0
@@ -52,7 +55,12 @@ int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int dep
 
     if((depth == 0) || (node.validMoves == 0) || (recParams.maxNodes == 0))          
     {
+        #ifdef DIFFERENCE
         gains = aiPieceBalance(model);
+        #endif
+        #ifdef WEIGHTED
+        gains = aiPieceBalanceWithWeight(model);
+        #endif
 
         if(((depth == DEPTH - 1) && (node.validMoves == 0)) 
             || ((depth == DEPTH - 1) && (recParams.maxNodes == 0)))
@@ -148,6 +156,46 @@ int aiPieceBalance(GameModel &model)
                     aiCount++;
                 else
                     aiCount--;
+            }
+        }
+    }
+    return aiCount;
+}
+
+int aiPieceBalanceWithWeight(GameModel& model)
+{
+    int aiCount = 0;
+
+    int weightMat[8][8] = {
+        { 4, -3, 2, 2, 2, 2, -3, 4 },
+        { -3, -4, -1, -1, -1, -1, -4, -3 },
+        { 2, -1, 1, 0, 0, 1, -1, 2 },
+        { 2, -1, 0, 1, 1, 0, -1, 2 },
+        { 2, -1, 0, 1, 1, 0, -1, 2 },
+        { 2, -1, 1, 0, 0, 1, -1, 2 },
+        { -3, -4, -1, -1, -1, -1, -4, -3 },
+        { 4, -3, 2, 2, 2, 2, -3, 4 },
+    };
+
+    Piece currentPiece;
+    Square position;
+    Piece currentAIPiece = (model.humanPlayer == PLAYER_WHITE)
+        ? PIECE_BLACK
+        : PIECE_WHITE;
+
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        for (int j = 0; j < BOARD_SIZE; j++)
+        {
+            position.x = i;
+            position.y = j;
+            currentPiece = getBoardPiece(model, position);
+            if (currentPiece != PIECE_EMPTY)
+            {
+                if (currentPiece == currentAIPiece)
+                    aiCount += weightMat[i][j];
+                else
+                    aiCount -= weightMat[i][j];
             }
         }
     }

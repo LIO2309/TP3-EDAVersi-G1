@@ -38,6 +38,7 @@ bool updateView(GameModel &model)
     }
     else if (model.currentPlayer == model.humanPlayer)
     {
+
         if (IsMouseButtonPressed(0))
         {
             // Human player
@@ -57,6 +58,7 @@ bool updateView(GameModel &model)
                 }
             }
         }
+
     }
     else
     {
