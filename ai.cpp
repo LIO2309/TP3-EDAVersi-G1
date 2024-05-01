@@ -13,29 +13,17 @@
 #include "controller.h"
 #include "view.h"
 
-#define DEPTH 7
+#define DEPTH 15
+#define MAX_NODES 4
 
 Square getBestMove(GameModel &model)
-{
-    //////////////////////////////////////////////////////
-    // +++ TEST
-    // Returns a random valid move...
-    /*
-    Moves validMoves;
-    getValidMoves(model, validMoves);
-
-    int index = rand() % validMoves.size();
-    return validMoves[index];
-    */
-    // --- TEST
-    ////////////////////////////////////////////////////
-    
+{  
     treeNode currentBoard;
-    //std::vector<int> secondLevelGains; 
     Moves validMoves;
     int index;
     recursiveParams recParams;
     recParams.model = model;
+    recParams.maxNodes = MAX_NODES;
     
     getValidMoves(model, validMoves);
     if (validMoves.size() > 1)
@@ -56,41 +44,48 @@ int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int dep
     Moves validMoves;
     getValidMoves(model, validMoves);
     node.validMoves = validMoves.size();
+    recParams.maxNodes--;
 
 
-    if((depth == 0) || (node.validMoves == 0))          
+    if((depth == 0) || (node.validMoves == 0) || (recParams.maxNodes == 0))          
     {
-        return aiPieceBalance(model);
+        gains = aiPieceBalance(model);
+
+        if(((depth == DEPTH - 1) && (node.validMoves == 0)) 
+            || ((depth == DEPTH - 1) && (recParams.maxNodes == 0)))
+        {
+            recParams.secondLevelGains.push_back(gains);
+        }
+        
+        return gains;
     }
 
     GameModel auxModel = model;
-    
-    for (int i = 0; i < node.validMoves; i++)
-    {
-        treeNode* childNode = new treeNode;
-        node.nextBoards.push_back(childNode);
-    }
 
     if(maxOrMin)
-    {
-        int i = 0;
+    {    
         maxGains = INT_MIN;
-        for(auto childNode : node.nextBoards)
+        for (int i = 0; i < validMoves.size();i++)
         {
-            playMove(auxModel, validMoves[i++]);   //hace la jugada de la IA y te cambia el turno al humano
-            recParams.model.turnTimer = auxModel.turnTimer;
-            gains = miniMax(auxModel,*childNode, recParams, depth - 1, !maxOrMin, alpha, beta, false);
-            
-            
+            if (recParams.maxNodes > 0)
+            {
+                treeNode* childNode = new treeNode;
+                node.nextBoards.push_back(childNode);
+                
+                playMove(auxModel, validMoves[i]);   //hace la jugada de la IA y te cambia el turno al humano
+                //recParams.model.turnTimer = auxModel.turnTimer;
+                gains = miniMax(auxModel, *node.nextBoards[0], recParams, depth - 1, !maxOrMin, alpha, beta, false);
 
-            //Visit postorder
-            auxModel = model;
-            delete childNode;
-            
-            maxGains = max(maxGains, gains);
-            alpha = max(alpha, gains);
-            if (beta <= alpha)
-                break;
+                //Visit postorder
+                auxModel = model;
+                delete node.nextBoards[0];
+                node.nextBoards.erase(node.nextBoards.begin()); 
+
+                maxGains = max(maxGains, gains);
+                alpha = max(alpha, gains);
+                if (beta <= alpha)
+                    break;
+            }
         }
 
         if(isFirstIteration)
@@ -106,30 +101,34 @@ int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int dep
     }
     else
     {
-        int i = 0;
         minGains = INT_MAX;
-        for(auto childNode : node.nextBoards)
+        for (int i = 0; i < validMoves.size();i++)
         {
-            playMove(auxModel, validMoves[i++]);   //hace la jugada del humano y te cambia el turno a la IA
-            recParams.model.turnTimer = auxModel.turnTimer;
-            gains = miniMax(auxModel, *childNode, recParams, depth - 1, !maxOrMin, alpha, beta, false);
+            if (recParams.maxNodes > 0)
+            {
+                treeNode* childNode = new treeNode;
+                node.nextBoards.push_back(childNode);
+                
+                playMove(auxModel, validMoves[i]);   //hace la jugada del humano y te cambia el turno a la IA
+                //recParams.model.turnTimer = auxModel.turnTimer;
+                gains = miniMax(auxModel, *node.nextBoards[0], recParams, depth - 1, !maxOrMin, alpha, beta, false);
 
-            //Visit postorder
-            auxModel = model;
-            delete childNode;
-            
-            minGains = min(minGains, gains);
-            beta = min(beta, gains);
-            if(beta <= alpha)
-                break;
+                //Visit postorder
+                auxModel = model;
+                delete node.nextBoards[0];
+                node.nextBoards.erase(node.nextBoards.begin());
+
+                minGains = min(minGains, gains);
+                beta = min(beta, gains);
+                if (beta <= alpha)
+                    break;
+            }
         }
 
         if(depth == DEPTH - 1)
-        {
             recParams.secondLevelGains.push_back(minGains);
-        }
+        
         return minGains;
-
     }   
 }
 
@@ -165,3 +164,4 @@ int aiPieceBalance(GameModel &model)
     }
     return aiCount;
 }
+

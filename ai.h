@@ -19,7 +19,8 @@ using namespace std;
 typedef struct
 {
 	std::vector<int> secondLevelGains;
-	GameModel model;
+	GameModel model;						//para implementar el draw view
+	int maxNodes;
 }recursiveParams;
 
 class treeNode
