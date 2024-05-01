@@ -143,15 +143,4 @@ void getValidMoves(GameModel &model, Moves &validMoves);
  */
 bool playMove(GameModel &model, Square move);
 
-/**
- * @brief Paints the neighbour pieces if in IN_GAME mode, else in AI mode returns the number of 
- * possible negihbours a move could gain.
- *
- * @param model The game model.
- * @param square The move.
- * @param mode Mode in which the function must work
- * @return Number of possible neighbours a move could possibly get.
- */
-int operatePiece(GameModel& model, Square move, Mode mode);
-
 #endif

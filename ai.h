@@ -11,16 +11,13 @@
 
 #include "model.h"
 
-#define MIN 0
-#define MAX 1
-
 using namespace std;
 
 typedef struct
 {
 	std::vector<int> secondLevelGains;
-	GameModel model;						//para implementar el draw view
 	int maxNodes;
+	int index;
 }recursiveParams;
 
 class treeNode
@@ -49,7 +46,9 @@ Square getBestMove(GameModel &model);
  * @param alpha	Label for alpha-beta pruning.
  * @param beta	Label for alpha-beta pruning.
  * @param isFirstIteration	True if it is the first iteration, false otherwise.
- * @return The amount of pieces won by the AI.
+ * @return The amount of pieces won or loss by the AI.
+ * When finalizing all the executions, an index will be passed to the program through the structure "recparams".
+ * This index will be used with the valid moves vectors in order to select the best move according to minimax.
  */
 int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
 /**

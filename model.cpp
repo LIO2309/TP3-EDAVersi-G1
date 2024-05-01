@@ -7,7 +7,6 @@
  */
 
 #include "raylib.h"
-
 #include "model.h"
 
 void initModel(GameModel &model)
@@ -93,12 +92,10 @@ void getValidMoves(GameModel &model, Moves &validMoves)
         for (int x = 0; x < BOARD_SIZE; x++)
         {
             Square move = {x, y};
-
             Piece currentPiece =
                 (getCurrentPlayer(model) == PLAYER_WHITE)
                 ? PIECE_WHITE
                 : PIECE_BLACK;
-
             Piece oppositePiece =
                 (getCurrentPlayer(model) == PLAYER_WHITE)
                 ? PIECE_BLACK
@@ -109,7 +106,7 @@ void getValidMoves(GameModel &model, Moves &validMoves)
                 bool f_current, f_empty;
                 bool f_pushback = false;
 
-                for(int i= x-1; i <= x+1 ;i++)
+                for(int i= x-1; i <= x+1 ; i++)
                 {
                     for (int j = y - 1; j <= y+1; j++)
                     {
@@ -123,14 +120,12 @@ void getValidMoves(GameModel &model, Moves &validMoves)
                                 int difY = aux.y - move.y;
                                 f_current = false;
                                 f_empty = false;
-
                                 aux.x += difX;
                                 aux.y += difY;
 
                                 while(isSquareValid(aux) && (!f_current) && (!f_empty))
                                 {
                                     Piece auxPiece = getBoardPiece(model, aux);
-
                                     if (auxPiece == currentPiece)
                                     {
                                         f_current = true;
@@ -154,29 +149,16 @@ void getValidMoves(GameModel &model, Moves &validMoves)
 
 bool playMove(GameModel &model, Square move)
 {
-    /*// Set game piece
     Piece piece =
         (getCurrentPlayer(model) == PLAYER_WHITE)
             ? PIECE_WHITE
             : PIECE_BLACK;
-
-    setBoardPiece(model, move, piece);
-    
-    operatePiece(model, move, IN_GAME);*/
-
-    /////////////////////////////////////
-        // Set game piece
-    Piece piece =
-        (getCurrentPlayer(model) == PLAYER_WHITE)
-            ? PIECE_WHITE
-            : PIECE_BLACK;
-
-    setBoardPiece(model, move, piece);
-
     Piece oppositePiece =
-                (getCurrentPlayer(model) == PLAYER_WHITE)
-                ? PIECE_BLACK
-                : PIECE_WHITE;
+        (getCurrentPlayer(model) == PLAYER_WHITE)
+            ? PIECE_BLACK
+            : PIECE_WHITE;
+
+    setBoardPiece(model, move, piece);
 
     for(int i = move.x-1; i <= move.x+1 ;i++)
     {
@@ -189,20 +171,20 @@ bool playMove(GameModel &model, Square move)
                 { 
                     int difX = neighbourPos.x - move.x;
                     int difY = neighbourPos.y - move.y;
-
                     Square linearMove = neighbourPos;
                     int paintCount = 0;
 
-                    while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
+                    while(isSquareValid(linearMove) && 
+                         (getBoardPiece(model, linearMove) == oppositePiece))
                     {
                         linearMove.x += difX;
                         linearMove.y += difY;
                         paintCount++; 
-                    }
-                    if(!isSquareValid(linearMove) || getBoardPiece(model, linearMove) == PIECE_EMPTY)
-                    {
+                    }     
+                    if(!isSquareValid(linearMove) || 
+                      getBoardPiece(model, linearMove) == PIECE_EMPTY)
                         paintCount = 0; 
-                    }
+
                     if(paintCount != 0)
                     {
                         while(paintCount > 0)
@@ -217,20 +199,16 @@ bool playMove(GameModel &model, Square move)
             }
         }
     }
-    /////////////////////////////////////
 
-    // Update timer
     double currentTime = GetTime();
     model.playerTime[model.currentPlayer] += currentTime - model.turnTimer;
     model.turnTimer = currentTime;
 
-    // Swap player
     model.currentPlayer =
         (model.currentPlayer == PLAYER_WHITE)
             ? PLAYER_BLACK
             : PLAYER_WHITE;
 
-    // Game over?
     Moves validMoves;
     getValidMoves(model, validMoves);
 
@@ -238,66 +216,4 @@ bool playMove(GameModel &model, Square move)
         model.gameOver = true;
 
     return true;
-}
-
-int operatePiece(GameModel &model, Square move, Mode mode)
-{
-    Piece piece =
-        (getCurrentPlayer(model) == PLAYER_WHITE)
-            ? PIECE_WHITE
-            : PIECE_BLACK;
-
-    Piece oppositePiece =
-                (getCurrentPlayer(model) == PLAYER_WHITE)
-                ? PIECE_BLACK
-                : PIECE_WHITE;
-
-    int finalGainsCount = 0;
-
-    for(int i= move.x-1; i <= move.x+1 ;i++)
-    {
-        for (int j = move.y-1; j <= move.y+1; j++)
-        {
-            Square neighbourPos = {i , j};
-            if (isSquareValid(neighbourPos))
-            {
-                if (getBoardPiece(model, neighbourPos) == oppositePiece)
-                { 
-                    int difX = neighbourPos.x - move.x;
-                    int difY = neighbourPos.y - move.y;
-
-                    Square linearMove = neighbourPos;
-                    int gainsCount = 0;
-
-                    while(isSquareValid(linearMove) && (getBoardPiece(model, linearMove) == oppositePiece))
-                    {
-                        linearMove.x += difX;
-                        linearMove.y += difY;
-                        gainsCount++; 
-                    }
-                    if(!isSquareValid(linearMove) || getBoardPiece(model, linearMove) == PIECE_EMPTY)
-                    {
-                        gainsCount = 0; 
-                    }
-
-                    if(gainsCount != 0)
-                    {
-                        while(gainsCount > 0)
-                        {
-                            linearMove.x -= difX;
-                            linearMove.y -= difY;
-                            setBoardPiece(model, linearMove, piece);
-                            gainsCount--;
-                        }
-                    }
-                    if(mode == AI)
-                    {
-                        finalGainsCount += gainsCount;
-                    }
-                }
-            }
-        }
-    }
-
-    return finalGainsCount;
 }
