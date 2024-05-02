@@ -34,7 +34,7 @@ la validación de casos de los algoritmos.
 
 ## Parte 2: Implementación del motor de IA
 
-A la hora de implementar el algoritmo minimax se tomaron las siguientes consideraciones:
+A la hora de implementar el algoritmo *minimax* se tomaron las siguientes consideraciones:
 * Se creó la clase *RecursiveParams* para el pasaje de estados y parámetros de la recursión, evitando pasar tantas cosas 
 en la llamada recursiva. Ésta contiene un *vector* de *int* (*secondLevelGains*) para almacenar las ganancias de cada nodo 
 hijo, un *int*  para accederlo (*index*), y un *int* con el máximo de nodos (*maxNodes*).
@@ -48,7 +48,7 @@ accediendo a distintos ciclos según el estado de la variable booleana *maxOrMin
 
 ## Parte 3: Poda del árbol
 
-El algoritmo minimax posee una complejidad computacional de O(b^d), siendo b un factor de tablero constante relacionado con 
+El algoritmo *minimax* posee una complejidad computacional de O(b^d), siendo b un factor de tablero constante relacionado con 
 su tamaño, y d la profundidad de búsqueda 
 [https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf].
 Como Reversi puede llegar a tener hasta 60 movimientos en una partida 
