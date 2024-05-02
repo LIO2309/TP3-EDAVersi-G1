@@ -68,7 +68,7 @@ Se determinó un límite de 50000 nodos de manera heurística.
 * Para implementación de la poda alpha-beta en el algoritmo minimax, se estudió el siguiente video: 
 [https://www.youtube.com/watch?v=l-hh51ncgDI&ab_channel=SebastianLague].
 
-* La elección de la altura máxima de búsqueda en el árbol fue seleccionada considerando el siguiente gráfico presente en un 
+* La altura máxima de búsqueda en el árbol se reguló considerando el siguiente gráfico presente en un 
 *paper* de *Oregon State University*:
 
 ![Tiempo computacional para distintas profundidades de búsqueda](/Images/Computation_times.png)
