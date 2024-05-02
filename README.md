@@ -63,7 +63,7 @@ Frente a esto, se tomaron las siguientes decisiones:
 * La elección de la altura máxima de búsqueda en el árbol fue seleccionada considerando el siguiente gráfico presente en un 
 *paper* de la Universidad de Washington [https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf]:
 
-![Pesos para cada posición en el tablero de Reversi](/Images/Weights__table.png)
+![Pesos para cada posición en el tablero de Reversi](/TP3-EDAVersi-G1/Images/Weights__table.png)
 
 
 ## Bonus points
