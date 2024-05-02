@@ -2,11 +2,13 @@
 
 ## Integrantes del grupo y contribución al trabajo de cada integrante
 
-* Colugnatti, Luciano E.: 
-* Riverós, Santiago A.:
-* Yiu, Leandro A.:
+* Colugnatti, Luciano E.: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
+del árbol, bonus points y pruebas.
+* Riverós, Santiago A.: Generación de movimientos válidos y algoritmo de jugada, investigación de profundidades de búsqueda, 
+complejidad computacional y tablas pesadas, pruebas y documentación.
+* Yiu, Leandro A.: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
+del árbol, bonus points y pruebas.
 
-[completar]
 
 ## Parte 1: Generación de movimientos válidos y algoritmo de jugada
 
@@ -40,33 +42,60 @@ hijo, un *int*  para accederlo (*index*), y un *int* con el máximo de nodos (*m
 a los parámetros recursivos y devolver la mejor jugada para realizar.
 * Se controlaron los turnos en los cuales la ganancia se debe maximizar o minimizar según juegue la IA o su oponente, 
 accediendo a distintos ciclos según el estado de la variable booleana *maxOrMin*.
-* Se modularizó el cálculo de las ganancias netas que implica cada jugada en la función *aiPieceBalanceWithWeight*, que es 
-llamada por *minimax*.
+* Se modularizó el cálculo de las ganancias netas que implica cada jugada en las funciones *aiPieceBalance* o 
+*aiPieceBalanceWithWeight* (según corresponda), que son llamadas por *minimax*.
 
 
 ## Parte 3: Poda del árbol
 
 El algoritmo minimax posee una complejidad computacional de O(b^d), siendo b un factor de tablero constante relacionado con 
-su tamaño, y d la profundidad de búsqueda [https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf].
-Como Reversi puede llegar a tener hasta 60 movimientos en una partida [https://sites.google.com/site/elreversista/preguntas-y-curiosidades-sobre-el-reversi], 
+su tamaño, y d la profundidad de búsqueda 
+[https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf].
+Como Reversi puede llegar a tener hasta 60 movimientos en una partida 
+[https://sites.google.com/site/elreversista/preguntas-y-curiosidades-sobre-el-reversi], 
 el factor exponencial d alcanzaría este valor, haciendo que el tiempo de ejecución sea excesivamente alto.
 Frente a esto, se tomaron las siguientes decisiones:
-* Se agregó la variable *int* *depht*, que determina la profundidad máxima (en niveles) hasta donde se analizará el árbol de juego.
-* Se implementó la **poda alpha-beta**, que evalúa las etiquetas alpha y beta de cada nodo intermedio y elimina ramas del árbol cuyo análisis es innecesario, ahorrando recursos computacionales y tiempo.
+* Se agregó la variable *int* *depht*, que determina la profundidad máxima (en niveles) hasta donde se analizará el árbol 
+de juego.
+* Se implementó la **poda alpha-beta**, que evalúa las etiquetas alpha y beta de cada nodo intermedio y elimina ramas del 
+árbol cuyo análisis es innecesario, ahorrando recursos computacionales y tiempo.
+* Para mejorar la complejidad computacional, se limitó la cantidad de nodos a analizar con el *#define* *MAX_NODES*.
+Se determinó un límite de 50000 nodos de manera heurística.
 
 
 ## Documentación adicional
 
-* Para implementación de la poda alpha-beta en el algoritmo minimax se estudió el siguiente video: 
+* Para implementación de la poda alpha-beta en el algoritmo minimax, se estudió el siguiente video: 
 [https://www.youtube.com/watch?v=l-hh51ncgDI&ab_channel=SebastianLague].
 
 * La elección de la altura máxima de búsqueda en el árbol fue seleccionada considerando el siguiente gráfico presente en un 
-*paper* de la Universidad de Washington [https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf]:
+*paper* de *Oregon State University*:
 
-![Pesos para cada posición en el tablero de Reversi](/Images/Weights_table.png)
-
+![Tiempo computacional para distintas profundidades de búsqueda](/Images/Computation_times_.png)
+[https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf]
 
 ## Bonus points
 
 * Como se indicó anteriormente, se implementó la poda alpha-beta.
-* Para mejorar el desempeño de la IA, agregó un criterio de decisión basado en una tabla con puntajes fijos para cada posición del tablero, ponderando las posiciones que aseguran una mejor jugada (como las esquinas, por ejemplo). Se estudiaron y compararon distintas tablas de distintas publicaciones de trabajos similares en Internet, y finalmente se seleccionó la siguiente
+
+* Para mejorar el desempeño de la IA, agregó un criterio de decisión basado en una tabla con puntajes fijos para cada posición
+del tablero, ponderando las posiciones que aseguran una mejor jugada (como las esquinas, por ejemplo). Se estudiaron y 
+compararon distintas tablas de distintas publicaciones de trabajos similares en Internet, y finalmente se seleccionó, de
+un *paper* de *University of Washington*, la siguiente:
+
+![Pesos para cada posición en el tablero de Reversi](/Images/Weights_table.png)
+[https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf]
+
+Se comparó el desempeño del algoritmo con los dos tipos de evaluación de jugadas implementados: 
+a) Diferencia neta entre las potenciales piezas perdidas y ganadas en cada jugada.
+b) Diferencia neta entre las potenciales piezas perdidas y ganadas en cada jugada con la adición de un factor de peso propio
+de cada posición del tablero.
+
+Con una cantidad de nodos constante (50000), y probando todas las profundidades de búsqueda desde 5 hasta 15 (siempre haciendo
+coincidir la profundidad de un método con la del otro), se realizaron 22 pruebas enfrentado a ambos métodos de evaluación.
+Los resultados fueron contundentes: el 90,9% de las partidas fueron ganadas por la IA que empleaba el método b (con tabla
+de pesos). Así, se seleccionó este método.
+Sin embargo, se puede seleccionar el método de evaluación de la IA definiendo en *ai.cpp* la *DIFFERENCE* para el primer caso, 
+y *WEIGHTED* para el segundo.
+
+

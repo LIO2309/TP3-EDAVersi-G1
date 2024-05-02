@@ -1,7 +1,8 @@
 /**
  * @brief Implements the Reversi game view
  * @author Marc S. Ressl
- *
+ * Luciano E. Colugnatti; Santiago A. Riverós; Leandro A. Yiu.
+ * Estructuras de Datos y Algoritmos (25.03).
  * @copyright Copyright (c) 2023-2024
  */
 

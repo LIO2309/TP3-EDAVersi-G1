@@ -51,16 +51,19 @@ Square getBestMove(GameModel &model);
  * This index will be used with the valid moves vectors in order to select the best move according to minimax.
  */
 int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
+
 /**
  * @brief Calculates the difference between AI's score and opponent's score.
  *
  * @return The difference between AI's score and opponent's score.
  */
 int aiPieceBalance(GameModel &model);
+
 /**
  * @brief Calculates the difference between AI's score and opponent's score.
+ * Includes a weight factor for each position.
  *
- * @return The difference between AI's score and opponent's score.
+ * @return The score balance considering the weight factor for each position.
  */
 int aiPieceBalanceWithWeight(GameModel& model);
 
