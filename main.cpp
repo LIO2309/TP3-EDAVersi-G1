@@ -12,13 +12,13 @@
 
 int main()
 {
-    GameModel model;
+	GameModel model;
 
-    initModel(model);
-    initView();
+	initModel(model);
+	initView();
 
-    while (updateView(model))
-        ;
+	while (updateView(model))
+		;
 
-    freeView();
+	freeView();
 }

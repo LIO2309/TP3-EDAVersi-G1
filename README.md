@@ -55,7 +55,7 @@ Como Reversi puede llegar a tener hasta 60 movimientos en una partida
 [https://sites.google.com/site/elreversista/preguntas-y-curiosidades-sobre-el-reversi], 
 el factor exponencial d alcanzaría este valor, haciendo que el tiempo de ejecución sea excesivamente alto.
 Frente a esto, se tomaron las siguientes decisiones:
-* Se agregó la variable *int* *depht*, que determina la profundidad máxima (en niveles) hasta donde se analizará el árbol 
+* Se agregó la variable *int* *depth*, que determina la profundidad máxima (en niveles) hasta donde se analizará el árbol 
 de juego.
 * Se implementó la **poda alpha-beta**, que evalúa las etiquetas alpha y beta de cada nodo intermedio y elimina ramas del 
 árbol cuyo análisis es innecesario, ahorrando recursos computacionales y tiempo.

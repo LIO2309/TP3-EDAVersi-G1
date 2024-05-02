@@ -18,13 +18,13 @@ typedef struct
 	std::vector<int> secondLevelGains;
 	int maxNodes;
 	int index;
-} recursiveParams;
+} RecursiveParams;
 
 class treeNode
 {
-	public:
-		int validMoves;
-		vector<treeNode*> nextBoards;
+public:
+	int validMoves;
+	vector<treeNode*> nextBoards;
 };
 
 /**
@@ -32,10 +32,10 @@ class treeNode
  *
  * @return The best move.
  */
-Square getBestMove(GameModel &model);
+Square getBestMove(GameModel& model);
 
 /**
- * @brief Implements the minimax algorithm up to a given tree depth, on a copy of the board. 
+ * @brief Implements the minimax algorithm up to a given tree depth, on a copy of the board.
  *	      Applies alpha-beta pruning.
 
  * @param model	The game model.
@@ -50,14 +50,14 @@ Square getBestMove(GameModel &model);
  * When finalizing all the executions, an index will be passed to the program through the structure "recparams".
  * This index will be used with the valid moves vectors in order to select the best move according to minimax.
  */
-int miniMax(GameModel &model, treeNode node, recursiveParams &recParams, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
+int miniMax(GameModel& model, treeNode node, RecursiveParams& recParams, int depth, bool maxOrMin, int alpha, int beta, bool isFirstIteration);
 
 /**
  * @brief Calculates the difference between AI's score and opponent's score.
  *
  * @return The difference between AI's score and opponent's score.
  */
-int aiPieceBalance(GameModel &model);
+int aiPieceBalance(GameModel& model);
 
 /**
  * @brief Calculates the difference between AI's score and opponent's score.

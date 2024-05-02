@@ -16,27 +16,27 @@
 
 enum Player
 {
-    PLAYER_BLACK,
-    PLAYER_WHITE,
+	PLAYER_BLACK,
+	PLAYER_WHITE,
 };
 
 enum Piece
 {
-    PIECE_EMPTY,
-    PIECE_BLACK,
-    PIECE_WHITE,
+	PIECE_EMPTY,
+	PIECE_BLACK,
+	PIECE_WHITE,
 };
 
 enum Mode
 {
-    AI,
-    IN_GAME,
+	AI,
+	IN_GAME,
 };
 
 struct Square
 {
-    int x;
-    int y;
+	int x;
+	int y;
 };
 
 #define GAME_INVALID_SQUARE \
@@ -46,16 +46,16 @@ struct Square
 
 struct GameModel
 {
-    bool gameOver;
+	bool gameOver;
 
-    Player currentPlayer;
+	Player currentPlayer;
 
-    double playerTime[2];
-    double turnTimer;
+	double playerTime[2];
+	double turnTimer;
 
-    Piece board[BOARD_SIZE][BOARD_SIZE];
+	Piece board[BOARD_SIZE][BOARD_SIZE];
 
-    Player humanPlayer;
+	Player humanPlayer;
 };
 
 typedef std::vector<Square> Moves;
@@ -65,14 +65,14 @@ typedef std::vector<Square> Moves;
  *
  * @param model The game model.
  */
-void initModel(GameModel &model);
+void initModel(GameModel& model);
 
 /**
  * @brief Starts a game.
  *
  * @param model The game model.
  */
-void startModel(GameModel &model);
+void startModel(GameModel& model);
 
 /**
  * @brief Returns the model's current player.
@@ -80,7 +80,7 @@ void startModel(GameModel &model);
  * @param model The game model.
  * @return PLAYER_WHITE or PLAYER_BLACK.
  */
-Player getCurrentPlayer(GameModel &model);
+Player getCurrentPlayer(GameModel& model);
 
 /**
  * @brief Returns the model's current score.
@@ -89,7 +89,7 @@ Player getCurrentPlayer(GameModel &model);
  * @param player The player (PLAYER_WHITE or PLAYER_BLACK).
  * @return The score.
  */
-int getScore(GameModel &model, Player player);
+int getScore(GameModel& model, Player player);
 
 /**
  * @brief Returns the game timer for a player.
@@ -98,7 +98,7 @@ int getScore(GameModel &model, Player player);
  * @param player The player (PLAYER_WHITE or PLAYER_BLACK).
  * @return The time in seconds.
  */
-double getTimer(GameModel &model, Player player);
+double getTimer(GameModel& model, Player player);
 
 /**
  * @brief Return a model's piece.
@@ -107,7 +107,7 @@ double getTimer(GameModel &model, Player player);
  * @param square The square.
  * @return The piece at the square.
  */
-Piece getBoardPiece(GameModel &model, Square square);
+Piece getBoardPiece(GameModel& model, Square square);
 
 /**
  * @brief Sets a model's piece.
@@ -116,7 +116,7 @@ Piece getBoardPiece(GameModel &model, Square square);
  * @param square The square.
  * @param piece The piece to be set
  */
-void setBoardPiece(GameModel &model, Square square, Piece piece);
+void setBoardPiece(GameModel& model, Square square, Piece piece);
 
 /**
  * @brief Checks whether a square is within the board.
@@ -132,7 +132,7 @@ bool isSquareValid(Square square);
  * @param model The game model.
  * @param validMoves A list that receives the valid moves.
  */
-void getValidMoves(GameModel &model, Moves &validMoves);
+void getValidMoves(GameModel& model, Moves& validMoves);
 
 /**
  * @brief Plays a move.
@@ -141,6 +141,6 @@ void getValidMoves(GameModel &model, Moves &validMoves);
  * @param square The move.
  * @return Move accepted.
  */
-bool playMove(GameModel &model, Square move);
+bool playMove(GameModel& model, Square move);
 
 #endif
