@@ -8,6 +8,7 @@ del árbol, bonus points y pruebas.
 complejidad computacional y tablas pesadas, pruebas y documentación.
 * **Yiu, Leandro A.**: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
 del árbol, bonus points y pruebas.
+* Nombre del equipo: "ReversIA".
 
 
 ## Parte 1: Generación de movimientos válidos y algoritmo de jugada
