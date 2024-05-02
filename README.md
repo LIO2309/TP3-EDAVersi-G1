@@ -2,11 +2,11 @@
 
 ## Integrantes del grupo y contribución al trabajo de cada integrante
 
-* Colugnatti, Luciano E.: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
+* **Colugnatti, Luciano E.**: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
 del árbol, bonus points y pruebas.
-* Riverós, Santiago A.: Generación de movimientos válidos y algoritmo de jugada, investigación de profundidades de búsqueda, 
+* **Riverós, Santiago A.**: Generación de movimientos válidos y algoritmo de jugada, investigación de profundidades de búsqueda, 
 complejidad computacional y tablas pesadas, pruebas y documentación.
-* Yiu, Leandro A.: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
+* **Yiu, Leandro A.**: Generación de movimientos válidos y algoritmo de jugada, implementación del motor de IA, poda
 del árbol, bonus points y pruebas.
 
 
@@ -71,7 +71,7 @@ Se determinó un límite de 50000 nodos de manera heurística.
 * La elección de la altura máxima de búsqueda en el árbol fue seleccionada considerando el siguiente gráfico presente en un 
 *paper* de *Oregon State University*:
 
-![Tiempo computacional para distintas profundidades de búsqueda](/Images/Computation_times_.png)
+![Tiempo computacional para distintas profundidades de búsqueda](/Images/Computation_times.png)
 [https://zzutk.github.io/docs/reports/2014.04%20-%20Searching%20Algorithms%20in%20Playing%20Othello.pdf]
 
 ## Bonus points
